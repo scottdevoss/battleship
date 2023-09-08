@@ -9,11 +9,10 @@ RSpec.describe Cell do
     @cell_2 = Cell.new("C3")
   end
 
-  describe '#initialize' do
-    it 'can initialize' do
-      expect(@cell).to be_an_instance_of(Cell)
-    end
+  it 'can initialize' do
+    expect(@cell).to be_an_instance_of(Cell)
   end
+
 
   describe '#ship' do 
     it 'can have a ship or nothing' do
