@@ -26,4 +26,12 @@ class Cell
       @ship.hit if !empty?
     end
   end
+
+  def render
+    if fired_upon? == false
+      "."
+    elsif fired_upon? == true && empty?
+      "M"
+    end
+  end
 end

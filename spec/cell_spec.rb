@@ -57,4 +57,12 @@ RSpec.describe Cell do
       expect(@cell.fired_upon?).to be true
     end
   end
+
+  describe '#render' do
+    it 'can print feedback on the outcome of the shot' do
+      expect(@cell.render).to eq(".")
+      @cell.fire_upon
+      expect(@cell.render).to eq("M")
+    end
+  end
 end
