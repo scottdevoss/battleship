@@ -16,6 +16,9 @@ RSpec.describe Cell do
   describe '#ship' do 
     it 'can have a ship or nothing' do
       expect(@cell.ship).to be nil
+      cruiser = Ship.new("Cruiser", 3)
+      @cell.place_ship(cruiser)
+      expect(@cell.ship).to eq(cruiser)
     end
   end
 
@@ -26,6 +29,13 @@ RSpec.describe Cell do
       @cell.place_ship(cruiser)
       @cell.ship
       expect(@cell.empty?).to be false
+    end
+  end
+
+  describe '#place_ship' do
+    it 'can place a ship' do
+      cruiser = Ship.new("Cruiser", 3)
+      expect(@cell.place_ship(cruiser)).to eq (cruiser)
     end
   end
 
