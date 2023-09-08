@@ -20,4 +20,25 @@ attr_reader :cells
         "D4" => Cell.new("D4")
       }
   end
+
+  def valid_coordinate?(coordinate)
+    if @cells.keys.include?(coordinate)
+      true
+    else 
+      false
+    end
+  end
+
+  def valid_placement?(ship, coordinates)
+
+    #check length of ship 
+    ship_length = ship.length
+    #check number of coordinates
+    coordinates_length = coordinates.length
+    #make sure they are both equal
+    ship_length == coordinates_length
+
+    #
+    
+  end
 end
