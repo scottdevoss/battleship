@@ -38,7 +38,7 @@ attr_reader :cells
     #make sure they are both equal
     ship_length == coordinates_length
 
-    #
+    
     
   end
 end
