@@ -36,9 +36,71 @@ attr_reader :cells
     #check number of coordinates
     coordinates_length = coordinates.length
     #make sure they are both equal
-    ship_length == coordinates_length
+    
+    numbers = []
+    letters = []
+    coordinates.each do |cord|
+      numbers << cord.chars.last.to_i
+      letters << cord.chars.first
+      
+    end
+    
+    if ship_length == coordinates_length
+      
+      check_letters(letters)
+      check_numbers(numbers)
+     
+      if check_letters(letters) == false || check_numbers(numbers) == false
+        check_diagonal(coordinates)
+      elsif check_letters(letters) == true && check_numbers(numbers) == true
+        true
+      end 
+      
+    else 
+      false
+    end 
+  end
 
-    
-    
+  def check_letters(letters)
+    sorted_letters = letters.sort
+    sorted_letters.uniq.count == 1 || sorted_letters.each_cons(2).all?{|a,b| b.ord - a.ord == 1} 
+  end
+
+  def check_numbers(numbers)
+   
+    # sorted_numbers = numbers.sort 
+    numbers.each_cons(2).all?{|a,b| b - a == 1} 
+
+  end
+
+  def check_diagonal(coordinates)
+    #if letters are different then the numbers have to be the same
+    # if letters.uniq.count > 1
+    #   numbers.uniq.count == 1
+    # elsif numbers.uniq.count == 1
+    #       letters.uniq.count > 1
+    # else  
+    #   true
+    # end
+    # letters.uniq.length > 1 && numbers.uniq.length > 1
+    # letters = coordinates.map { |coordinate| coordinate[0].ord }
+    # numbers = coordinates.map { |coordinate| coordinate[1..-1].to_i }
+  
+    # diffs = []
+    # coordinates.each_with_index do |coordinate, idx|
+    #   diffs << (letters[idx] - numbers[idx])
+    # end
+  
+    # letters.uniq.length > 1 && numbers.uniq.length > 1 && diffs.uniq.length == 1
+
+
+    letters = coordinates.map { |coordinate| coordinate[0].ord }
+    numbers = coordinates.map { |coordinate| coordinate[1..-1].to_i }
+
+    letters.uniq.length > 1 && numbers.uniq.length > 1
+
+
+    #if the numbers are the same the letters have to be different
+
   end
 end
