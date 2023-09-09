@@ -1,8 +1,10 @@
 class Board 
-attr_reader :cells
+attr_reader :cells,
+             :ships
 
   def initialize
     @cells = create_cells
+    @ships = []
     @letter = ("A".."D").to_a
     @number = (1..4).to_a
   end 
@@ -55,4 +57,13 @@ attr_reader :cells
   def overlap?(coordinates)
     coordinates.any? { |coordinate| @cells[coordinate].ship != nil }
   end 
+
+  def place(ship, coordinates)
+    coordinates.map do |coordinate|
+      if @cells.keys.include?(coordinate)
+        @cells[coordinate].place_ship(ship)
+      end
+    end
+    @ships << ship  
+  end
 end
