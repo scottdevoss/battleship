@@ -66,4 +66,24 @@ attr_reader :cells,
     end
     @ships << ship  
   end
+
+  def render(reveal = false) 
+    header = "  " + ("1".."4").to_a.join(" ") + " \n" 
+    rows = @letter.map do |letter|
+      row(letter, reveal) 
+    end
+    header + rows.join("\n").rstrip + " \n"
+  end 
+
+  def row(letter, reveal)
+    row = letter + " "
+    @number.each do |number|
+      coordinate = letter + number.to_s 
+      cell = @cells[coordinate] 
+      row += cell.render(reveal) + " " 
+    end
+    row
+  end
+  
+    
 end
