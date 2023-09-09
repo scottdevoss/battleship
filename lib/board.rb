@@ -1,44 +1,58 @@
 class Board 
 attr_reader :cells
+
   def initialize
-    @cells = {
-        "A1" => Cell.new("A1"),
-        "A2" => Cell.new("A2"),
-        "A3" => Cell.new("A3"),
-        "A4" => Cell.new("A4"),
-        "B1" => Cell.new("B1"),
-        "B2" => Cell.new("B2"),
-        "B3" => Cell.new("B3"),
-        "B4" => Cell.new("B4"),
-        "C1" => Cell.new("C1"),
-        "C2" => Cell.new("C2"),
-        "C3" => Cell.new("C3"),
-        "C4" => Cell.new("C4"),
-        "D1" => Cell.new("D1"),
-        "D2" => Cell.new("D2"),
-        "D3" => Cell.new("D3"),
-        "D4" => Cell.new("D4")
-      }
+    @cells = create_cells
+    @letter = ("A".."D").to_a
+    @number = (1..4).to_a
+  end 
+
+  def create_cells 
+    cells = {}
+    ("A".."D").each do |letter|
+      (1..4).each do |number|
+        coordinate = "#{letter}#{number}"
+        cells[coordinate] = Cell.new(coordinate)
+      end
+    end
+      cells
   end
 
   def valid_coordinate?(coordinate)
-    if @cells.keys.include?(coordinate)
-      true
-    else 
-      false
-    end
+    @cells.key?(coordinate)
   end
 
   def valid_placement?(ship, coordinates)
+    return false unless ship.length == coordinates.count
+    return false unless direction_placement?(coordinates)
+    return false unless horizontal_consecutive?(coordinates) || vertical_consecutive?(coordinates)
+    return false if overlap?(coordinates)
+    true
+  end 
 
-    #check length of ship 
-    ship_length = ship.length
-    #check number of coordinates
-    coordinates_length = coordinates.length
-    #make sure they are both equal
-    ship_length == coordinates_length
+  def direction_placement?(coordinates)
+    letter = coordinates.map { |coordinate| coordinate[0] }
+    number =  coordinates.map { |coordinate| coordinate[1..-1].to_i }
+    letter.uniq.length == 1 || number.uniq.length == 1
+  end 
 
-    #
-    
+  def horizontal_consecutive?(coordinates)
+    letter = coordinates.map { |coordinate| coordinate[0] }
+    number =  coordinates.map { |coordinate| coordinate[1..-1].to_i }
+
+    letter.uniq.length == 1 && number.each_cons(2).all? { |key, value| (value - key) == 1 }
+    # returns false when the placement is NOT consecutive
   end
+
+  def vertical_consecutive?(coordinates)
+    letter = coordinates.map { |coordinate| coordinate[0] }
+    number =  coordinates.map { |coordinate| coordinate[1..-1].to_i }
+
+    number.uniq.length == 1 && letter.each_cons(2).all? { |key, value| (value.ord - key.ord) == 1 }
+    # returns false when the placement is NOT consecutive
+  end
+
+  def overlap?(coordinates)
+    coordinates.any? { |coordinate| @cells[coordinate].ship != nil }
+  end 
 end
