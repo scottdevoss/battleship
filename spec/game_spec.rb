@@ -62,7 +62,7 @@ RSpec.describe 'Game' do
       @game.human_shoot('A2') 
       @game.human_board.cells['B1'].fire_upon
       expect(@game.display_boards).to eq(
-        "=============ROBO BOARD=============\n  1 2 3 4 \nA . H . . \nB . . . . \nC . . . . \nD . . . . \n\n=============HUMAN BOARD=============\n  1 2 3 4 \nA S . . . \nB H . . S \nC . . . S \nD . . . S \n"
+        "=============ROBO BOARD=============\n  1 2 3 4 \nA . H . . \nB . . . . \nC . . . . \nD . . . . \n\n=============HUMAN BOARD=============\n  1 2 3 4 \nA S . . . \nB S . . S \nC . . . S \nD . . . S \n"
       )
     end
   end
