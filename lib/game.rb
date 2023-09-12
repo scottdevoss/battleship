@@ -1,24 +1,18 @@
 class Game
-  attr_reader :human_board,
-              :robo_board,
-              :robo_cruiser,
-              :robo_submarine,
-              :human_cruiser,
-              :human_submarine
-
+  attr_reader :human_cruiser, :human_submarine, :robo_cruiser, :robo_submarine, :human_board, :robo_board
   def initialize
-    @human_board = Board.new
-    @robo_board = Board.new
-    @robo_cruiser = Ship.new("Cruiser", 3)
-    @robo_submarine = Ship.new("Submarine", 2)
     @human_cruiser = Ship.new("Cruiser", 3)
     @human_submarine = Ship.new("Submarine", 2)
+    @robo_cruiser = Ship.new("Cruiser", 3)
+    @robo_submarine = Ship.new("Submarine", 2)
+    @human_board = Board.new
+    @robo_board = Board.new
   end
-
+  #main menu
   def main_menu
     "Welcome to BATTLESHIP\n Enter p to play. Enter q to quit."
   end
-
+  #Setup
   def start_game
     puts main_menu
     loop do 
@@ -32,32 +26,33 @@ class Game
       end
     end
   end
+  #computer ship placement
+  def get_random_coordinates(size, ship)
+    random_cords = @robo_board.cells.keys.sample(size)
+    until @robo_board.valid_placement?(ship, random_cords)
+      random_cords = @robo_board.cells.keys.sample(size)
+    end 
+    random_cords
+  end
+
 
   def robo_place_ship
-    loop do
-      random_coordinates = []
-      3.times do 
-      random_coordinates << @robo_board.cells.keys.sample
-      end
-      if @robo_board.valid_placement?(@robo_cruiser, random_coordinates)
-        @robo_board.place(@robo_cruiser, random_coordinates)
-        break
-      end
-    end
-    loop do
-      random_coordinates = []
-      2.times do 
-      random_coordinates << @robo_board.cells.keys.sample
-      end
-      if @robo_board.valid_placement?(@robo_submarine, random_coordinates)
-        @robo_board.place(@robo_submarine, random_coordinates)
-        break
-      end
-    end
+    cords = get_random_coordinates(3, @robo_cruiser)
+    @robo_board.place(@robo_cruiser, cords)
+    cords = get_random_coordinates(2, @robo_submarine)
+    @robo_board.place(@robo_submarine, cords)
     print 'My ships are now on my board'
   end
-  
+  #player ship placement
   def human_place_ship(ship)
+    print "You now need to lay out your two ships.
+The Cruiser is three units long and the Submarine is two units long.
+  1 2 3 4
+A . . . .
+B . . . .
+C . . . .
+D . . . .
+Enter the squares for the Cruiser (3 spaces):"
     loop do
       human_input = gets.chomp.upcase.split(" ")
       if @human_board.valid_placement?(ship, human_input)
@@ -71,137 +66,36 @@ class Game
     @human_board.render(true)
   end
   
+  #taking turns
+
+  #displaying the board
   def display_boards
     "=============ROBO BOARD=============\n" + 
     "#{@robo_board.render}\n" +
     "=============HUMAN BOARD=============\n" +
     "#{@human_board.render(reveal_ship = true)}"
   end
+  #player shot
   def human_shoot(coordinate)
-    @robo_board.cells[coordinate].fire_upon if valid_shot?(coordinate)
-    # puts results(@robo_board, coordinate)
-    results(@robo_board, coordinate)
+    
   end
-  
+  #computer shot
   def robo_shoot
-    coordinate = @human_board.cells.keys.sample
-    until unfired_cells(@human_board).include?(coordinate) &&
-      @human_board.valid_coordinate?(coordinate)
-      coordinate = @human_board.cells.keys.sample
-      break
-    end
-    @human_board.cells[coordinate].fire_upon
-    # puts results(@human_board, coordinate)
-    "#{results(@human_board, coordinate)} declares Robo"
+    
   end
-  
-  def game_over?
-    if @human_cruiser.sunk? && @human_submarine.sunk?
-      true
-    elsif @robo_cruiser.sunk? && @robo_submarine.sunk?
-      true
-    else
-      false
-    end
-  end
-  
-  def winner 
-    if game_over?
-      if @human_cruiser.sunk? && @human_submarine.sunk?
-        :robo
-      elsif @robo_cruiser.sunk? && @robo_submarine.sunk?
-        :human
-      end
-    else 
-      :nobody
-    end
-  end
-  
-  def end_game
-    if game_over?
-      if winner == :robo
-        'Robo wins!'
-      elsif winner == :human
-        'You win!'
-      end
-    end
-  end
-  
-  def bye_bye
-    puts
+  #coordinates that have already been fired upon
+  #end game
 
-    puts "                The battle is over... for now...                               "
-  end
-  
-  #helpers
-  def unfired_cells(board)
-    unfired = board.cells.select do |_, cell|
-      cell.fired_upon? == false
-    end
-    unfired.keys
-  end
+  # def game_over?
+  #   if @human_cruiser.sunk? && @human_submarine.sunk?
+  #     true
+  #   elsif @robo_cruiser.sunk? && @robo_submarine.sunk?
+  #     true
+  #   else
+  #     false
+  #   end
+  # end
 
-  def human_shot_validation(coordinate)
-    if unfired_cells(@robo_board).include?(coordinate) && @robo_board.valid_coordinate?(coordinate)
-      'KABOOM'
-    elsif !unfired_cells(@robo_board).include?(coordinate) && @robo_board.valid_coordinate?(coordinate)
-      'You already shot there, remember? Try again.'
-    elsif !@robo_board.valid_coordinate?(coordinate)
-      'No. Check your aim. Set another coordinate in your sights.'
-    end
-  end
-  
-  def valid_shot?(coordinate)
-    if unfired_cells(@robo_board).include?(coordinate) && 
-      @robo_board.valid_coordinate?(coordinate) && 
-      unfired_cells(@robo_board).include?(coordinate)
-      true
-    else
-      false
-    end
-  end
-
-  def results(board, coordinate)
-    if board.valid_coordinate?(coordinate)
-      if board.cells[coordinate].render == 'M'
-        puts 'Whoops. Missed.'
-        'Whoops. Missed.'
-      elsif board.cells[coordinate].render == 'X'
-        puts 'Sunken ship!'
-        'Sunken ship!'
-      elsif board.cells[coordinate].render == 'H'
-        puts 'Yippee!! Ship struck!'
-        'Yippee!! Ship struck!'
-      end
-    else
-      false
-    end
-  end
-
-  def setup
-    robo_place_ship
-    puts ''
-    puts "It's your turn. You need to lay out your two ships."
-    puts "The cruiser is three units long, and the submarine is two units long"
-    puts @human_board.render(true)
-    puts 'Choose your squares for the Cruiser (3 spaces):'
-    human_place_ship(@human_cruiser)
-    puts 'Choose your squares for the Submarine (2 spaces):'
-    puts human_place_ship(@human_submarine)
-  end
-
-  def turn
-    until game_over?
-      puts display_boards
-      puts "Enter the coordinate for your shot"
-      coordinate = gets.chomp.upcase
-        until valid_shot?(coordinate)
-          human_shot_validation(coordinate)
-          coordinate = gets.chomp.upcase
-          break
-          human_shoot(coordinate)
-        end
-      puts robo_shoot
-    end
-  end
 end
+
+  

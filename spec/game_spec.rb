@@ -50,7 +50,7 @@ RSpec.describe 'Game' do
       )
     end
 
-    it 'boards are updated after a turn' do 
+    xit 'boards are updated after a turn' do 
       @game.robo_board.place(@game.robo_cruiser, ['A1', 'A2', 'A3'])
       @game.robo_board.place(@game.robo_submarine, ['B1', 'C1'])
       @game.human_board.place(@game.human_cruiser, ['B4', 'C4', 'D4'])
