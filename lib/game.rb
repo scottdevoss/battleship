@@ -65,7 +65,7 @@ Enter the squares for the Cruiser (3 spaces):"
     puts @human_board.render(true)
     @human_board.render(true)
   end
-  
+
   #taking turns
 
   #displaying the board
@@ -77,7 +77,14 @@ Enter the squares for the Cruiser (3 spaces):"
   end
   #player shot
   def human_shoot(coordinate)
-    
+    puts "Enter the squares for the Submarine(2 spaces):"
+    if @robo_board.include?(coordinate) && robo.valid_coordinate?(coordinate)
+        return "hit"
+      elsif !@robo_board.include?(coordinate) && robo.valid_coordinate?(coordinate)
+        return "you already shot there, try again!"
+      else  
+       return "try again"
+    end
   end
   #computer shot
   def robo_shoot
