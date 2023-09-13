@@ -18,7 +18,11 @@ class Game
     loop do 
       input = gets.chomp
       if input == "p" 
-        break 
+        robo_place_ship
+        display_boards
+        human_place_ship(human_cruiser)
+        human_place_ship(human_submarine)
+        human_shoot(coordinate)
       elsif input == "q"
         puts "See you later"     
       else
@@ -53,10 +57,10 @@ B . . . .
 C . . . .
 D . . . .
 Enter the squares for the Cruiser (3 spaces):"
-    loop do
-      human_input = gets.chomp.upcase.split(" ")
-      if @human_board.valid_placement?(ship, human_input)
-        @human_board.place(ship, human_input)
+loop do
+  human_input = gets.chomp.upcase.split(" ")
+  if @human_board.valid_placement?(ship, human_input)
+    @human_board.place(ship, human_input)
         break
       else
         puts "Try again with valid coordinates:\n "
@@ -65,7 +69,7 @@ Enter the squares for the Cruiser (3 spaces):"
     puts @human_board.render(true)
     @human_board.render(true)
   end
-  
+
   #taking turns
 
   #displaying the board
@@ -77,7 +81,14 @@ Enter the squares for the Cruiser (3 spaces):"
   end
   #player shot
   def human_shoot(coordinate)
-    
+    puts "Enter the squares for the Submarine(2 spaces):"
+    if @robo_board.include?(coordinate) && robo.valid_coordinate?(coordinate)
+        return "hit"
+      elsif !@robo_board.include?(coordinate) && robo.valid_coordinate?(coordinate)
+        return "you already shot there, try again!"
+      else  
+       return "try again"
+    end
   end
   #computer shot
   def robo_shoot
