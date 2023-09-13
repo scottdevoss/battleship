@@ -58,6 +58,8 @@ RSpec.describe Board do
       submarine = Ship.new("Submarine", 2)
       expect(@board.valid_placement?(cruiser, ["A1", "B2", "C3"])).to be false
       expect(@board.valid_placement?(submarine, ["C2", "D3"])).to be false
+      expect(@board.valid_placement?(cruiser, ["B2", "C2", "D2"])).to be true
+      expect(@board.valid_placement?(submarine, ["C2", "D2"])).to be true
     end
    
     it '#valid_placement' do
@@ -65,6 +67,8 @@ RSpec.describe Board do
       submarine = Ship.new("Submarine", 2) 
       expect(@board.valid_placement?(submarine, ["A1", "A2"])).to be true
       expect(@board.valid_placement?(cruiser, ["B1", "C1", "D1"])).to be true
+      expect(@board.valid_placement?(cruiser, ["B1", "C2", "D3"])).to be false
+      expect(@board.valid_placement?(submarine, ["D1", "D1"])).to be false
     end
   end
 
@@ -93,6 +97,7 @@ RSpec.describe Board do
         submarine = Ship.new("Submarine", 2)   
         @board.place(cruiser, ["A1", "A2", "A3"])
         expect(@board.valid_placement?(submarine, ["A1", "B1"])).to eq(false)
+        expect(@board.valid_placement?(submarine, ["B1", "C1"])).to eq(true)
       end
     end
 
